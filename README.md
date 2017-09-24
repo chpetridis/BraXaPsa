@@ -1,2 +1,2 @@
 # BraXaPsa
-Mini game created with kivy
+Mini game created with [kivy](https://kivy.org/#home)
