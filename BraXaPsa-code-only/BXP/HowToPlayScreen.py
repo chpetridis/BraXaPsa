@@ -8,11 +8,11 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
 
 back_sound = SoundLoader.load('Sounds/pressed_sound.mp3')       # Sound for going to previous Screen
-Globals.sounds.append(back_sound)                               # Add sound to list for  on/off management
+Globals.sounds.append(back_sound)
 
 
 class HowToPlayScreen(Screen):
-    parent_manager = ScreenManager          # The Screen Manager this screen is attached to
+    parent_manager = ScreenManager
     how_to_play_layout = FloatLayout()      # Basic layout of the Screen
 
     def build_layout(self):
@@ -21,7 +21,6 @@ class HowToPlayScreen(Screen):
         back = Button(background_normal='Images/back.jpg', size_hint=(.1, .1), background_down='Images/backpressed.jpg',
                       pos_hint={'center_x': 0.95, 'center_y': 0.95}, on_release=partial(self.change_screen, 'menu'))
 
-        #  Load everything up! #
         scroll_bar.add_widget(how_to_play_image)
         self.how_to_play_layout.add_widget(scroll_bar)
         self.how_to_play_layout.add_widget(back)
@@ -35,6 +34,6 @@ class HowToPlayScreen(Screen):
     def change_screen(self, screen, *largs):
         global back_sound
 
-        if Globals.active_sounds:   # If sounds are on play sound else silence
+        if Globals.active_sounds:
             back_sound.play()
         self.parent_manager.current = screen
