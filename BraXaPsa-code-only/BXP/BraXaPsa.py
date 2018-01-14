@@ -1,10 +1,7 @@
 from kivy.app import App
 from kivy.config import Config
 Config.set('graphics', 'resizable', False)      # Has to be here or won't work
-from BXP.ScreenMenu import ScreenMenu
-from BXP.ScreenPlay import ScreenPlay
-from BXP.HowToPlayScreen import HowToPlayScreen
-from BXP.ScreenHighScores import ScreenHighScores
+from BXP.ScreenFactory import ScreenFactory
 from kivy.core.window import Window
 from kivy.uix.screenmanager import ScreenManager
 from kivy.uix.screenmanager import WipeTransition
@@ -13,19 +10,14 @@ from kivy.uix.screenmanager import WipeTransition
 class BraXaPsaApp(App):
 
     def build(self):
-
-        self.icon = 'Images/app_image.png'
         sm = ScreenManager(transition=WipeTransition())
+        factory = ScreenFactory()
 
-        #  Create the 4 Screens #
-        menu_screen = ScreenMenu(name='menu')
-        menu_screen.set_screen_manager(sm)
-        play_screen = ScreenPlay(name='play')
-        play_screen.set_screen_manager(sm)
-        high_scores_screen = ScreenHighScores(name='high_scores')
-        high_scores_screen.set_screen_manager(sm)
-        how_to_play_screen = HowToPlayScreen(name='how_to_play')
-        how_to_play_screen.set_screen_manager(sm)
+        # Create Screens #
+        menu_screen = factory.create_screen(sm, 'menu')
+        play_screen = factory.create_screen(sm, 'play')
+        high_scores_screen = factory.create_screen(sm, 'high_scores')
+        how_to_play_screen = factory.create_screen(sm, 'how_to_play')
 
         #  Add Screens in the Screen Manager widget #
         sm.add_widget(menu_screen)
