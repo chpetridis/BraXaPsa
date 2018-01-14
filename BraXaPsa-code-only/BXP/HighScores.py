@@ -5,11 +5,11 @@ from kivy.uix.boxlayout import BoxLayout
 class HighScores:
     high_scores_file = open("BXP/HighScores.txt", "r+")
     high_scores = []
-    high_scores_layout = BoxLayout  # for GUI interaction
+    high_scores_layout = BoxLayout
 
     def __init__(self):
-        self.high_scores = self.high_scores_file.read().splitlines()    # Read file and keep the data
-        self.high_scores_file.seek(0, 0)                                # Go to beginning of file
+        self.high_scores = self.high_scores_file.read().splitlines()
+        self.high_scores_file.seek(0, 0)
 
     def load_high_scores(self):                     # Load High Scores in GUI view
         self.high_scores_layout.clear_widgets()
