@@ -1,5 +1,4 @@
 from functools import partial
-
 from kivy.core.audio import SoundLoader
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.boxlayout import BoxLayout
@@ -25,9 +24,11 @@ class ScreenPlay(Screen):
     parent_manager = ScreenManager
     level = Level()
     heart_list = []
-    score_bar = ProgressBar(pos_hint={'center_x': 0.9, 'center_y': 0.58}, size_hint=(.15, None))
+    score_bar = ProgressBar
 
     def build_layout(self):
+        self.score_bar = ProgressBar(pos_hint={'center_x': 0.9, 'center_y': 0.58}, size_hint=(.15, None))
+
         #  LAYOUTS  #
         hearts_layout = self.create_box_layout(0.9, 0.78, .15, .05)
         total_score_layout = self.create_box_layout(0.8,  0.02, .2, .05)
@@ -199,58 +200,57 @@ class ScreenPlay(Screen):
         self.level.set_popup(end_game_popup, 'end_game_popup')
 
     def reload_level(self, defeat_popup, play_area, moves_count, score_number, reduce_lives, *largs):
-        # Level object components reset #
-        self.level.load_level(play_area)                                    # Load new items
-        self.level.current_moves = int(self.level.get_starting_moves())     # Current moves back to initial number
-        self.level.current_score = 0                                        # Level Score back to 0
+        self.level.load_level(play_area)
+        self.level.current_moves = int(self.level.get_starting_moves())
+        self.level.current_score = 0
         if reduce_lives:                # If this function was called from pressing restart button reduce player lives
             self.level.player.reduce_lives()
 
-        # GUI reset #
+        self.reset_gui(moves_count, score_number, defeat_popup)
+
+    def load_next_level(self, level_number, moves_count, victory_popup, score_number, play_area, *largs):
+        level_number.id = str(int(level_number.id) + 1)
+        self.reset_components(play_area)
+        self.re_initiate_labels(level_number, moves_count, score_number, victory_popup)
+
+    def restart_game(self, end_game_popup, level_number, moves_count, score_number, play_area, total_score, *largs):
+        level_number.id = '1'
+        self.level.file_commander.reset_file_pointer()
+        self.reset_components(play_area)
+        self.reset_player_data()
+
+        for heart in self.heart_list:
+            heart.source = 'Images/heart.jpg'
+        total_score.text = '0'
+        self.re_initiate_labels(level_number, moves_count, score_number, end_game_popup)
+
+    def re_initiate_labels(self, level_number, moves_count, score_number, popup):
+        level_number.text = '[size=25][b]' + level_number.id + '[/b][/size]'
+        moves_count.text = "[size=25][color=#b40000][b]" + self.level.get_starting_moves() + "[/b][/color][/size]"
+        score_number.text = "[size=20][b]0[/b][/size]"
+        popup.dismiss()
+
+    def reset_gui(self, moves_count, score_number, defeat_popup):
         if self.level.player.lives is 2:
             self.heart_list[2].source = 'Images/heart_empty.jpg'
         elif self.level.player.lives is 1:
             self.heart_list[1].source = 'Images/heart_empty.jpg'
         else:
-            self.level.check_for_high()             # If game ended check for high score and show end game popup
+            self.level.check_for_high()
             self.level.end_game_popup.open()
+
         self.score_bar.value = 0
         moves_count.text = "[size=25][color=#b40000][b]" + self.level.get_starting_moves() + "[/b][/color][/size]"
         score_number.text = "[size=20][b]0[/b][/size]"
         defeat_popup.dismiss()
 
-    def load_next_level(self, level_number, moves_count, victory_popup, score_number, play_area, *largs):
-        # Level object components re-initiate #
-        level_number.id = str(int(level_number.id) + 1)
-        self.level.__init__()                               # Read the next level information
-        self.level.load_level(play_area)                    # Load new items
-        self.score_bar.max = self.level.score_to_beat       # Update max number of score bar(different for every level)
-        self.score_bar.value = 0                            # bar % back to 0
-        self.level.current_score = 0                        # Level score back to 0
-
-        # GUI re-initiate #
-        level_number.text = '[size=25][b]' + level_number.id + '[/b][/size]'
-        moves_count.text = "[size=25][color=#b40000][b]" + self.level.get_starting_moves() + "[/b][/color][/size]"
-        score_number.text = "[size=20][b]0[/b][/size]"
-        victory_popup.dismiss()
-
-    def restart_game(self, end_game_popup, level_number, moves_count, score_number, play_area, total_score, *largs):
-        # Level object components re-initiate #
-        level_number.id = '1'
-        self.level.file_commander.reset_file_pointer()
-        self.level.__init__()                       # Same actions as in load_next_level()
+    def reset_components(self, play_area):
+        self.level.__init__()
         self.level.load_level(play_area)
         self.score_bar.max = self.level.score_to_beat
         self.score_bar.value = 0
         self.level.current_score = 0
-        self.level.player.lives = 3                 # additionally reset the player data
-        self.level.player.total_score = 0
 
-        # GUI re-initiate #
-        for heart in self.heart_list:
-            heart.source = 'Images/heart.jpg'
-        level_number.text = '[size=25][b]' + level_number.id + '[/b][/size]'
-        moves_count.text = "[size=25][color=#b40000][b]" + self.level.get_starting_moves() + "[/b][/color][/size]"
-        score_number.text = "[size=20][b]0[/b][/size]"
-        total_score.text = '0'
-        end_game_popup.dismiss()
+    def reset_player_data(self):
+        self.level.player.lives = 3
+        self.level.player.total_score = 0
