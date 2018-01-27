@@ -322,21 +322,21 @@ class Item:
 
         for item in triad_list:
             if item.pos_x > 0:
-				self.check_for_bomb(parent_level, item.pos_x-1, item.pos_y)
+		self.check_for_bomb(parent_level, item.pos_x-1, item.pos_y)
             if item.pos_x > 0 and item.pos_y > 0:
-				self.check_for_bomb(parent_level, item.pos_x-1, item.pos_y-1)
+		self.check_for_bomb(parent_level, item.pos_x-1, item.pos_y-1)
             if item.pos_x > 0 and item.pos_y < 9:
-				self.check_for_bomb(parent_level, item.pos_x-1, item.pos_y+1)
+		self.check_for_bomb(parent_level, item.pos_x-1, item.pos_y+1)
             if item.pos_y > 0:
-				self.check_for_bomb(parent_level, item.pos_x, item.pos_y-1)
+		self.check_for_bomb(parent_level, item.pos_x, item.pos_y-1)
             if item.pos_y < 9:
-				self.check_for_bomb(parent_level, item.pos_x, item.pos_y+1)
+		self.check_for_bomb(parent_level, item.pos_x, item.pos_y+1)
             if item.pos_x < 9:
-				self.check_for_bomb(parent_level, item.pos_x+1, item.pos_y)
+		self.check_for_bomb(parent_level, item.pos_x+1, item.pos_y)
             if item.pos_x < 9 and item.pos_y > 0:
-				self.check_for_bomb(parent_level, item.pos_x+1, item.pos_y-1)
+		self.check_for_bomb(parent_level, item.pos_x+1, item.pos_y-1)
             if item.pos_x < 9 and item.pos_y < 9:
-				self.check_for_bomb(parent_level, item.pos_x+1, item.pos_y+1)
+		self.check_for_bomb(parent_level, item.pos_x+1, item.pos_y+1)
 					
 	@staticmethod
 	def check_for_bomb(parent_level, pos_x, pos_y):
